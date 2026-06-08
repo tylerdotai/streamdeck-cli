@@ -33,6 +33,7 @@ from typing import Any
 import yaml
 
 from streamdeck_cli.icons import set_icon
+from streamdeck_cli.manifest import Page
 from streamdeck_cli.writes import create_page
 
 # ── Errors ──────────────────────────────────────────────────────────────────
@@ -191,7 +192,7 @@ def apply_yaml_spec(
 # ── Render: page → YAML ─────────────────────────────────────────────────────
 
 
-def render_yaml_spec(page) -> str:
+def render_yaml_spec(page: Page) -> str:
     """Render a Page object back to YAML.
 
     The result is a string suitable for human editing. Icons are referenced

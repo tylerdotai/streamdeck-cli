@@ -14,6 +14,13 @@ from streamdeck_cli import __version__
 from streamdeck_cli.icons import IconError, set_icon
 from streamdeck_cli.listing import list_devices, list_pages, list_profiles
 from streamdeck_cli.paths import resolve_profile_root
+from streamdeck_cli.profile_io import (
+    ProfileIOError,
+    diff_profiles,
+    export_profile,
+    import_profile,
+    merge_profiles,
+)
 from streamdeck_cli.validate import _page_dir_exists, validate_profile
 from streamdeck_cli.writes import (
     backup_profile,
@@ -316,6 +323,82 @@ def cmd_restore(backup: Path, install_root: Path | None) -> None:
     root = install_root if install_root is not None else resolve_profile_root().root
     restore_profile(backup, root)
     click.echo(f"restored {backup} into {root}")
+
+
+@main.command("export")
+@click.option("-o", "--output", "output", required=True, type=click.Path(path_type=Path),
+              help="Output file (.json or .yaml)")
+@click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("--profile-dir", type=click.Path(exists=True, path_type=Path), default=None)
+def cmd_export(output: Path, install_root: Path | None, profile_dir: Path | None) -> None:
+    """Export a profile to JSON or YAML (lighter than the zip backup)."""
+    pd = _resolve_profile_dir(install_root, profile_dir)
+    fmt: str
+    if output.suffix.lower() in (".yaml", ".yml"):
+        fmt = "yaml"
+    elif output.suffix.lower() == ".json":
+        fmt = "json"
+    else:
+        raise click.ClickException(f"output must end in .json, .yaml, or .yml (got {output.suffix!r})")
+    try:
+        export_profile(pd, output, fmt=fmt)  # type: ignore[arg-type]
+    except ProfileIOError as e:
+        raise click.ClickException(str(e)) from None
+    click.echo(f"wrote {output} ({fmt})")
+
+
+@main.command("import")
+@click.argument("source", type=click.Path(exists=True, path_type=Path))
+@click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("--profile-dir", "profile_dir", required=True, type=click.Path(exists=True, path_type=Path))
+def cmd_import(source: Path, install_root: Path | None, profile_dir: Path) -> None:
+    """Import a JSON or YAML profile export into a profile dir."""
+    try:
+        result = import_profile(profile_dir, source)
+    except ProfileIOError as e:
+        raise click.ClickException(str(e)) from None
+    click.echo(f"created {len(result.created)} page(s), updated {len(result.updated)} page(s)")
+    for err in result.errors:
+        click.echo(f"ERROR: {err}", err=True)
+
+
+@main.command("diff")
+@click.argument("source", type=click.Path(exists=True, path_type=Path))
+@click.argument("target", type=click.Path(exists=True, path_type=Path))
+def cmd_diff(source: Path, target: Path) -> None:
+    """Show the diff to turn SOURCE into TARGET (added/removed/modified pages)."""
+    d = diff_profiles(source, target)
+    if d.is_empty():
+        click.echo("no differences")
+        return
+    for p in d.added:
+        click.echo(f"+ {p.uuid}\t{p.name}")
+    for p in d.removed:
+        click.echo(f"- {p.uuid}\t{p.name}")
+    for p in d.modified:
+        click.echo(f"~ {p.uuid}\t{p.name}")
+
+
+@main.command("merge")
+@click.argument("source", type=click.Path(exists=True, path_type=Path))
+@click.argument("target", type=click.Path(exists=True, path_type=Path))
+@click.option("--overwrite/--no-overwrite", default=False,
+              help="Overwrite modified pages in the target (default: skip them)")
+@click.option("--allow-remove/--no-allow-remove", default=False,
+              help="Allow removing pages from the target (default: skip them)")
+def cmd_merge(source: Path, target: Path, overwrite: bool, allow_remove: bool) -> None:
+    """Apply changes from SOURCE into TARGET.
+
+    The diff is computed as: 'what would I need to change in TARGET to make it
+    match SOURCE?'. Added pages from SOURCE are created in TARGET. Modified
+    pages in TARGET are only overwritten if --overwrite is set. Pages missing
+    from SOURCE are only removed from TARGET if --allow-remove is set.
+    """
+    d = diff_profiles(target, source)
+    result = merge_profiles(target, d, overwrite=overwrite, allow_remove=allow_remove)
+    click.echo(f"applied {result.applied} change(s), skipped {result.skipped}")
+    for err in result.errors:
+        click.echo(f"ERROR: {err}", err=True)
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 
 class IconError(ValueError):
@@ -60,11 +61,11 @@ def _parse_key(key: str) -> tuple[str, str, str]:
 
 
 def _ensure_action(
-    controllers: list[dict],
+    controllers: list[dict[str, Any]],
     controller_type: str,
     col: str,
     row: str,
-) -> dict:
+) -> tuple[dict[str, Any], str]:
     """Find or create the action object for a (controller, col, row) key.
 
     Mutates and returns the action dict in place.
