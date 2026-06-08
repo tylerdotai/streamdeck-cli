@@ -1,0 +1,429 @@
+{
+    "Controllers": [
+        {
+            "Actions": {
+                "0,0": {
+                    "ActionID": "b82628ed-58b5-4115-b031-985f5c35eb19",
+                    "Encoder": {
+                        "Icon": "Images/97WWHHJRAT34T7TC9VPFNTCCWOZ.png"
+                    },
+                    "LinkedTitle": true,
+                    "Name": "Hotkey",
+                    "Plugin": {
+                        "Name": "Activate a Key Command",
+                        "UUID": "com.elgato.streamdeck.system.hotkey",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "Coalesce": true,
+                        "Hotkeys": [
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": true,
+                                "KeyModifiers": 2,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": 90,
+                                "QTKeyCode": 90,
+                                "VKeyCode": 90
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": true,
+                                "KeyModifiers": 3,
+                                "KeyOption": false,
+                                "KeyShift": true,
+                                "NativeCode": 90,
+                                "QTKeyCode": 90,
+                                "VKeyCode": 90
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            }
+                        ]
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Title": "Undo/Redo"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.hotkey"
+                },
+                "1,0": {
+                    "ActionID": "1f37fc61-68fd-438a-b12a-e27f77d372e9",
+                    "Encoder": {
+                        "IconVisible": true
+                    },
+                    "LinkedTitle": true,
+                    "Name": "Multimedia",
+                    "Plugin": {
+                        "Name": "Multimedia",
+                        "UUID": "com.elgato.streamdeck.system.multimedia",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "actionIdx": 18
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Title": " System Volume"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.multimedia"
+                },
+                "2,0": {
+                    "ActionID": "8aeccd60-aec0-4c88-a684-4cf95a86e3a2",
+                    "LinkedTitle": true,
+                    "Name": "Brightness",
+                    "Plugin": {
+                        "Name": "Brightness",
+                        "UUID": "com.elgato.streamdeck.system.keybrightness",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "actionIdx": 0
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Title": "SD+ Brightness"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.keybrightness"
+                },
+                "3,0": {
+                    "ActionID": "70fcf1a4-ac51-4cad-8126-d31ed2d1c8eb",
+                    "Encoder": {
+                        "IconVisible": false,
+                        "background": "Images/PQSFRLIADH6AJ2S7CM71IAWP30Z.png"
+                    },
+                    "LinkedTitle": true,
+                    "Name": "Hotkey",
+                    "Plugin": {
+                        "Name": "Activate a Key Command",
+                        "UUID": "com.elgato.streamdeck.system.hotkey",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "Coalesce": true,
+                        "Hotkeys": [
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": 126,
+                                "QTKeyCode": 16777235,
+                                "VKeyCode": 126
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": 125,
+                                "QTKeyCode": 16777237,
+                                "VKeyCode": 125
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            }
+                        ]
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Title": " "
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.hotkey"
+                }
+            },
+            "Background": "Images/PCJ1M48VAD7HLDISJG9MRCL604Z.png",
+            "Type": "Encoder"
+        },
+        {
+            "Actions": {
+                "0,0": {
+                    "ActionID": "0a5c5e0b-8fc5-4a38-b2ba-e50b3b234321",
+                    "LinkedTitle": true,
+                    "Name": "Create Folder",
+                    "Plugin": {
+                        "Name": "Create Folder",
+                        "UUID": "com.elgato.streamdeck.profile.openchild",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "ProfileUUID": "c7d1645d-1ce8-47bc-bf5d-974252981fff"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 12,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/IWL8H3JLJL34D04S0M4H6PC8MGZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "Title": "Apps",
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.profile.openchild"
+                },
+                "1,0": {
+                    "ActionID": "9f3c6485-104d-4156-ae55-2fcb1f46b066",
+                    "LinkedTitle": true,
+                    "Name": "Create Folder",
+                    "Plugin": {
+                        "Name": "Create Folder",
+                        "UUID": "com.elgato.streamdeck.profile.openchild",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "ProfileUUID": "edceda95-5e88-4149-9e43-c2716b88ec05"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 12,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/A2O64JIDWT6SW5ISSQOE5B70HKZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "Title": "Links",
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.profile.openchild"
+                },
+                "1,1": {
+                    "ActionID": "caf5ba67-b050-4c3f-a5bd-55857afdf33a",
+                    "LinkedTitle": true,
+                    "Name": "Hotkey",
+                    "Plugin": {
+                        "Name": "Activate a Key Command",
+                        "UUID": "com.elgato.streamdeck.system.hotkey",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "Coalesce": true,
+                        "Hotkeys": [
+                            {
+                                "KeyCmd": true,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 9,
+                                "KeyOption": false,
+                                "KeyShift": true,
+                                "NativeCode": 21,
+                                "QTKeyCode": 52,
+                                "VKeyCode": 21
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            }
+                        ]
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 12,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/VFA18F0LD514BB90EWHJCBNJS8Z.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "Title": "Screen\n\n\n\nShot",
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.hotkey"
+                },
+                "2,0": {
+                    "ActionID": "bcb0e561-3a81-4096-947b-fedd2ad93847",
+                    "LinkedTitle": true,
+                    "Name": "Create Folder",
+                    "Plugin": {
+                        "Name": "Create Folder",
+                        "UUID": "com.elgato.streamdeck.profile.openchild",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "ProfileUUID": "197db819-fee9-4d79-8885-ad75ae8f1874"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 12,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/5FM6E1TQOT1WW2JT4GM1JMNJAKZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "Title": "Emojis",
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.profile.openchild"
+                },
+                "2,1": {
+                    "ActionID": "c9fe67ed-5bad-4b05-9f78-fffe7f61c559",
+                    "LinkedTitle": true,
+                    "Name": "Hotkey",
+                    "Plugin": {
+                        "Name": "Activate a Key Command",
+                        "UUID": "com.elgato.streamdeck.system.hotkey",
+                        "Version": "1.0"
+                    },
+                    "Resources": null,
+                    "Settings": {
+                        "Coalesce": true,
+                        "Hotkeys": [
+                            {
+                                "KeyCmd": true,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 9,
+                                "KeyOption": false,
+                                "KeyShift": true,
+                                "NativeCode": 23,
+                                "QTKeyCode": 53,
+                                "VKeyCode": 23
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            }
+                        ]
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 12,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/LWSWIGFMDP68T986TPC173S8KGZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "Title": "Screen\n\n\n\nRecord",
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.hotkey"
+                }
+            },
+            "Type": "Keypad"
+        }
+    ],
+    "Icon": "",
+    "Name": ""
+}

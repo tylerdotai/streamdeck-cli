@@ -1,0 +1,171 @@
+{
+    "Controllers": [
+        {
+            "Actions": {
+                "0,0": {
+                    "ActionID": "824c0894-525e-4517-9903-594719c1d5d5",
+                    "LinkedTitle": true,
+                    "Name": "Parent Folder",
+                    "Resources": null,
+                    "Settings": {},
+                    "State": 0,
+                    "States": [
+                        {}
+                    ],
+                    "UUID": "com.elgato.streamdeck.profile.backtoparent"
+                },
+                "0,1": {
+                    "ActionID": "e08ec689-9647-4d29-bc9d-da2f8ae4be9e",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/System/Applications/Calculator.app\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 11,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/99O8PRCJE11112I1HAODNEHISSZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                },
+                "1,0": {
+                    "ActionID": "b3b60d26-705f-4303-8f6f-4c055ebe16f5",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/KQT3C3GPIP16179IGF7ECWSN54Z.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                },
+                "1,1": {
+                    "ActionID": "a60cc2ab-363f-4ebe-924c-cc9ed6fff87d",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/System/Applications/FaceTime.app\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 11,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/VIPBB7LCKT4AT45PKFTQNCF8G4Z.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                },
+                "2,0": {
+                    "ActionID": "3185bc68-3c22-4153-bd94-068b33b8e28a",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/Applications/Safari.app\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/M90FMMK7PH4L9BAHDVGV4TT7MCZ.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                },
+                "2,1": {
+                    "ActionID": "6cb64eae-7243-4161-9a4f-6c2815f51618",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/System/Applications/Messages.app\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 11,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/158F979HIH6CB4PNGFID9979QOZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                },
+                "3,0": {
+                    "ActionID": "f6308fc0-bcd9-427d-94bd-67b2e6466323",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/Applications/Elgato Stream Deck.app\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 9,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/SP50J0217P28TDPJLFQPWPS4IGZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                },
+                "3,1": {
+                    "ActionID": "b518783d-9e4e-4a26-99c3-1f2979c35301",
+                    "LinkedTitle": true,
+                    "Name": "Open",
+                    "Resources": null,
+                    "Settings": {
+                        "path": "\"/System/Applications/Notes.app\""
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/8A305G6P2P5OB38SG9I3H2RJ88Z.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.open"
+                }
+            },
+            "Type": "Keypad"
+        },
+        {
+            "Actions": null,
+            "Type": "Encoder"
+        }
+    ],
+    "Icon": "",
+    "Name": ""
+}

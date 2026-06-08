@@ -1,4 +1,4 @@
-"""Tests for the `validate` command — catches manifest corruption before the SD app sees it."""
+"""Tests for the validate command."""
 from __future__ import annotations
 
 import json
@@ -8,15 +8,11 @@ from pathlib import Path
 import pytest
 
 from streamdeck_cli.validate import validate_page, validate_profile
-
-# Fixture is the install root.
-FIXTURES = Path(__file__).resolve().parent.parent / "fixtures" / "real-profile"
-PROFILE_DIR = FIXTURES / "ProfilesV3" / "92B4842D-F21D-422E-B181-3733A63927AE.sdProfile"
+from tests.conftest import PROFILE_DIR
 
 
 @pytest.fixture
 def isolated_profile(tmp_path: Path) -> Path:
-    """Copy the real fixture's profile dir into tmp so tests can mutate it safely."""
     dest = tmp_path / "profile.sdProfile"
     shutil.copytree(PROFILE_DIR, dest)
     return dest
@@ -29,23 +25,20 @@ class TestValidateProfile:
         assert result.errors == []
 
     def test_missing_manifest_fails(self, tmp_path: Path) -> None:
-        # Empty profile root → no manifest.json
         result = validate_profile(tmp_path / "nope.sdProfile")
         assert not result.ok
         assert any("manifest" in e.lower() for e in result.errors)
 
     def test_orphan_page_dir_warns(self, isolated_profile: Path) -> None:
-        # Add an empty dir under Profiles that isn't referenced in manifest
         orphan = isolated_profile / "Profiles" / "00000000-0000-0000-0000-000000000000"
         orphan.mkdir()
         result = validate_profile(isolated_profile)
         assert any("orphan" in w.lower() for w in result.warnings)
 
     def test_current_page_missing_fails(self, isolated_profile: Path) -> None:
-        # Remove the page that manifest points to as Current
         manifest = json.loads((isolated_profile / "manifest.json").read_text())
         current = manifest["Pages"]["Current"]
-        page_dir = isolated_profile / "Profiles" / current.upper()
+        page_dir = isolated_profile / "Profiles" / current
         if page_dir.exists():
             shutil.rmtree(page_dir)
         result = validate_profile(isolated_profile)
@@ -55,12 +48,12 @@ class TestValidateProfile:
 
 class TestValidatePage:
     def test_valid_empty_page_passes(self, isolated_profile: Path) -> None:
-        page_dir = isolated_profile / "Profiles" / "8DBCFF3D-E4D6-45EE-881D-1ED8016C300B"
+        page_dir = isolated_profile / "Profiles" / "E3B4A4C1-F629-88D7-DCE5-CE8C672C96FB"
         result = validate_page(page_dir)
         assert result.ok
 
     def test_valid_populated_page_passes(self, isolated_profile: Path) -> None:
-        page_dir = isolated_profile / "Profiles" / "FF56CDD9-5CA7-4E39-927D-2390318B62F7"
+        page_dir = isolated_profile / "Profiles" / "ABE23767-B7E5-62B5-C463-F3D5D64CB922"
         result = validate_page(page_dir)
         assert result.ok
 

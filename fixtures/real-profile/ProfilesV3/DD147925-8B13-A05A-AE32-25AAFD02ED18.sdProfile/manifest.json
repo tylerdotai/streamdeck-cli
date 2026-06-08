@@ -1,0 +1,16 @@
+{
+    "Device": {
+        "Model": "20GBD9901",
+        "UUID": "@(1)[sanitized/000/37A8EEC1-CE19]"
+    },
+    "Name": "Default Profile",
+    "Pages": {
+        "Current": "ABE23767-B7E5-62B5-C463-F3D5D64CB922",
+        "Default": "E3B4A4C1-F629-88D7-DCE5-CE8C672C96FB",
+        "Pages": [
+            "ABE23767-B7E5-62B5-C463-F3D5D64CB922",
+            "85375AAE-DF9F-AB29-A1E4-EE91909B4742"
+        ]
+    },
+    "Version": "3.0"
+}

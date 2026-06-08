@@ -1,0 +1,196 @@
+{
+    "Controllers": [
+        {
+            "Actions": null,
+            "Type": "Encoder"
+        },
+        {
+            "Actions": {
+                "0,0": {
+                    "ActionID": "5a5dc05b-75b1-4294-a78e-180c78c493e9",
+                    "LinkedTitle": true,
+                    "Name": "Parent Folder",
+                    "Resources": null,
+                    "Settings": {},
+                    "State": 0,
+                    "States": [
+                        {}
+                    ],
+                    "UUID": "com.elgato.streamdeck.profile.backtoparent"
+                },
+                "0,1": {
+                    "ActionID": "31b5b633-40a2-4a83-b976-fc4c00e32e21",
+                    "LinkedTitle": true,
+                    "Name": "Text",
+                    "Resources": null,
+                    "Settings": {
+                        "isSendingEnter": false,
+                        "pastedText": "\ud83d\udc49\ud83d\udc48\ud83e\udd7a"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/N8Q6MNPV256QB0HH7ICQ8I0V64Z.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.text"
+                },
+                "1,0": {
+                    "ActionID": "f757ba88-086f-42bb-91ff-506ce3430a55",
+                    "LinkedTitle": true,
+                    "Name": "Hotkey",
+                    "Resources": null,
+                    "Settings": {
+                        "Coalesce": true,
+                        "Hotkeys": [
+                            {
+                                "KeyCmd": true,
+                                "KeyCtrl": true,
+                                "KeyModifiers": 10,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": 49,
+                                "QTKeyCode": 32,
+                                "VKeyCode": 49
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            },
+                            {
+                                "KeyCmd": false,
+                                "KeyCtrl": false,
+                                "KeyModifiers": 0,
+                                "KeyOption": false,
+                                "KeyShift": false,
+                                "NativeCode": -1,
+                                "QTKeyCode": 33554431,
+                                "VKeyCode": -1
+                            }
+                        ]
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "FontFamily": "",
+                            "FontSize": 12,
+                            "FontStyle": "",
+                            "FontUnderline": false,
+                            "Image": "Images/H5E7KOVAGL4QTENWPFMC1W2VDGZ.png",
+                            "OutlineThickness": 2,
+                            "ShowTitle": true,
+                            "Title": "Emoji\n\n\n\nKeyboard",
+                            "TitleAlignment": "bottom",
+                            "TitleColor": "#ffffff"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.hotkey"
+                },
+                "1,1": {
+                    "ActionID": "69f1104a-7afa-4b7e-864f-06a336c687df",
+                    "LinkedTitle": true,
+                    "Name": "Text",
+                    "Resources": null,
+                    "Settings": {
+                        "isSendingEnter": false,
+                        "pastedText": "\ud83d\udc41\ud83d\udc44\ud83d\udc41"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/VLNGGJCW0528DDTDLMW2WNNRBKZ.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.text"
+                },
+                "2,0": {
+                    "ActionID": "b60c42a3-3382-494f-98bb-8fe3e9a18897",
+                    "LinkedTitle": true,
+                    "Name": "Text",
+                    "Resources": null,
+                    "Settings": {
+                        "isSendingEnter": false,
+                        "pastedText": "\ud83d\udc40"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/BA9JG88VGH74363SE01J2WL5D8Z.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.text"
+                },
+                "2,1": {
+                    "ActionID": "5a37b1eb-6626-4878-8926-1ccc9c4811d4",
+                    "LinkedTitle": true,
+                    "Name": "Text",
+                    "Resources": null,
+                    "Settings": {
+                        "isSendingEnter": false,
+                        "pastedText": "\ud83d\udcaf"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/S1FIQLPM1D647C1CAQB1PQN130Z.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.text"
+                },
+                "3,0": {
+                    "ActionID": "983333ba-3de2-40fb-8283-230bea458352",
+                    "LinkedTitle": true,
+                    "Name": "Text",
+                    "Resources": null,
+                    "Settings": {
+                        "isSendingEnter": false,
+                        "pastedText": "\ud83d\udd25"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/0SWOAT0LRL29P8H5EJ4TBMBWQCZ.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.text"
+                },
+                "3,1": {
+                    "ActionID": "f482be28-8798-4b11-8ce0-149b4a8a80da",
+                    "LinkedTitle": true,
+                    "Name": "Text",
+                    "Resources": null,
+                    "Settings": {
+                        "isSendingEnter": false,
+                        "pastedText": "\ud83d\udca9"
+                    },
+                    "State": 0,
+                    "States": [
+                        {
+                            "Image": "Images/P65AKC44GD1L15B654KCB129Q4Z.png"
+                        }
+                    ],
+                    "UUID": "com.elgato.streamdeck.system.text"
+                }
+            },
+            "Type": "Keypad"
+        }
+    ],
+    "Icon": "",
+    "Name": ""
+}

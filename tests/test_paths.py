@@ -1,8 +1,4 @@
-"""Tests for the path resolver — finds the Stream Deck profile root for the current platform.
-
-Reference fixtures under ``fixtures/real-profile/`` were captured from a real
-Stream Deck 7.3.1 install on macOS.
-"""
+"""Tests for the path resolver."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,8 +6,7 @@ from pathlib import Path
 import pytest
 
 from streamdeck_cli.paths import ProfileRoot, default_profile_root, resolve_profile_root
-
-FIXTURES = Path(__file__).resolve().parent.parent / "fixtures" / "real-profile"
+from tests.conftest import REAL_PROFILE_ROOT as FIXTURES
 
 
 class TestDefaultProfileRoot:
@@ -58,6 +53,5 @@ class TestProfileRootProfilesDir:
 
     def test_profiles_dir_does_not_create_disk(self, tmp_path: Path) -> None:
         root = ProfileRoot(root=tmp_path, exists=False)
-        # Should compute the path without writing to disk.
         assert (root.profiles_dir.exists()) is False
         assert root.profiles_dir == tmp_path / "ProfilesV3"
