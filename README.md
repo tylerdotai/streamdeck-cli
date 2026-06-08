@@ -133,9 +133,11 @@ See [`docs/schema.md`](docs/schema.md) for the full schema reference, including 
 
 `streamdeck-cli` runs on **macOS** (tested on 26.5) and **Windows** (path resolution supported; not tested on a live install). Linux is not supported because the Elgato app doesn't ship for it.
 
+> 👉 **For a copy-pasteable first-5-minutes walkthrough against a live install, see [`docs/quickstart.md`](docs/quickstart.md).** Every command in that doc was actually run as part of writing it.
+
 ### Prerequisites
 
-* Python **3.10 or newer** (3.14 is fine)
+* Python **3.10, 3.11, or 3.12** (the CI matrix; 3.14 is not yet verified)
 * An installed copy of the **Elgato Stream Deck** desktop app
 * A connected Stream Deck device (the CLI can also operate on a backup copy without a device plugged in)
 
@@ -231,6 +233,11 @@ streamdeck show-spec ff56cdd9-5ca7-4e39-927d-2390318b62f7 -o pages/coding.yaml
 ```
 
 For more examples and the full schema, see the [Schema Reference](docs/schema.md).
+The schema doc also covers the `streamdeck-cli`-specific extensions:
+- **[Appendix A](docs/schema.md#appendix-a-yaml-page-spec-format)** — the
+  YAML page spec format used by `new-page --from-yaml` and `show-spec`
+- **[Appendix B](docs/schema.md#appendix-b-json--yaml-profile-export-format)**
+  — the JSON/YAML profile export format, plus diff and merge semantics
 
 #### Use from an MCP client
 
