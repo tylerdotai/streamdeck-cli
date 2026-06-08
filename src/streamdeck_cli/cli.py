@@ -23,6 +23,7 @@ from streamdeck_cli.writes import (
     restore_profile,
     set_current_page,
 )
+from streamdeck_cli.yaml_pages import YamlPageSpec, YamlSpecError, apply_yaml_spec, render_yaml_spec
 
 # ── Shared options ──────────────────────────────────────────────────────────
 
@@ -116,20 +117,63 @@ def cmd_show_page(uuid: str, install_root: Path | None, profile_dir: Path | None
 
 
 @main.command("new-page")
-@click.option("--name", required=True, help="Name for the new page")
+@click.option("--name", required=False, default=None, help="Name for the new page (ignored if --from-yaml is set)")
 @click.option("--icon", default="", help="Icon path (relative to page Images/)")
+@click.option("--from-yaml", "from_yaml", default=None, type=click.Path(exists=True, path_type=Path),
+              help="Create the page from a YAML spec file")
+@click.option("--icons-dir", "icons_dirs", multiple=True, type=click.Path(exists=True, path_type=Path),
+              help="Directory to search for icons referenced in the YAML spec (repeatable)")
 @click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
 @click.option("--profile-dir", type=click.Path(exists=True, path_type=Path), default=None)
 def cmd_new_page(
-    name: str,
+    name: str | None,
     icon: str,
+    from_yaml: Path | None,
+    icons_dirs: tuple[Path, ...],
     install_root: Path | None,
     profile_dir: Path | None,
 ) -> None:
-    """Create a new empty page."""
+    """Create a new empty page, or populate one from a YAML spec."""
+    if from_yaml is None and not name:
+        raise click.ClickException("--name is required unless --from-yaml is set")
     pd = _resolve_profile_dir(install_root, profile_dir)
-    new_uuid = create_page(pd, name=name, icon=icon)
-    click.echo(new_uuid)
+    if from_yaml is not None:
+        text = from_yaml.read_text()
+        try:
+            spec = YamlPageSpec.from_yaml(text)
+        except YamlSpecError as e:
+            raise click.ClickException(str(e)) from None
+        try:
+            new_uuid = apply_yaml_spec(pd, spec, icon_search_dirs=list(icons_dirs))
+        except YamlSpecError as e:
+            raise click.ClickException(str(e)) from None
+        click.echo(new_uuid)
+    else:
+        new_uuid = create_page(pd, name=name or "", icon=icon)
+        click.echo(new_uuid)
+
+
+@main.command("show-spec")
+@click.argument("page_uuid")
+@click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("--profile-dir", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("-o", "--output", "output", type=click.Path(path_type=Path), default=None,
+              help="Write YAML to this file instead of stdout")
+def cmd_show_spec(
+    page_uuid: str, install_root: Path | None, profile_dir: Path | None, output: Path | None
+) -> None:
+    """Render a page's manifest as a YAML spec."""
+    from streamdeck_cli.manifest import load_page
+
+    pd = _resolve_profile_dir(install_root, profile_dir)
+    page_dir = _resolve_page_dir(pd, page_uuid)
+    page = load_page(page_dir)
+    yaml_text = render_yaml_spec(page)
+    if output is not None:
+        output.write_text(yaml_text)
+        click.echo(f"wrote {output}")
+    else:
+        click.echo(yaml_text, nl=False)
 
 
 @main.command("clone-page")
