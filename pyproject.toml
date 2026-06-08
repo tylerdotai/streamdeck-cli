@@ -27,6 +27,7 @@ dependencies = [
     "click>=8.1",
     "pyyaml>=6.0",
     "rich>=13.0",
+    "mcp>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -62,6 +63,14 @@ ignore = ["E501"]
 python_version = "3.10"
 strict = true
 files = ["src/streamdeck_cli"]
+
+[[tool.mypy.overrides]]
+# mcp (the Model Context Protocol SDK) ships no type stubs and is still pre-1.0
+# in its type surface. Relax strict checking for the MCP wrapper only.
+module = ["streamdeck_cli.mcp_server"]
+strict = false
+follow_imports = "silent"
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"
