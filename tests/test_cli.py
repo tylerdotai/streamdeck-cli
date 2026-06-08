@@ -113,6 +113,40 @@ class TestWriteCommands:
         assert result.exit_code == 0, result.output
         assert not (tmp_install / "ProfilesV3" / PROFILE_DIR.name / "Profiles" / new_uuid).exists()
 
+    def test_rename_page(self, runner: CliRunner, tmp_install: Path) -> None:
+        result = runner.invoke(
+            main, ["new-page", "--name", "Before", "--install-root", str(tmp_install)]
+        )
+        new_uuid = result.output.strip()
+        result = runner.invoke(
+            main, ["rename-page", new_uuid, "After", "--install-root", str(tmp_install)]
+        )
+        assert result.exit_code == 0, result.output
+        manifest = json.loads(
+            (
+                tmp_install
+                / "ProfilesV3"
+                / PROFILE_DIR.name
+                / "Profiles"
+                / new_uuid
+                / "manifest.json"
+            ).read_text()
+        )
+        assert manifest["Name"] == "After"
+
+    def test_rename_page_unknown_uuid(self, runner: CliRunner, tmp_install: Path) -> None:
+        result = runner.invoke(
+            main,
+            [
+                "rename-page",
+                "00000000-0000-0000-0000-000000000000",
+                "Ghost",
+                "--install-root",
+                str(tmp_install),
+            ],
+        )
+        assert result.exit_code != 0
+
     def test_validate_clean(self, runner: CliRunner) -> None:
         result = runner.invoke(main, ["validate", "--install-root", str(FIXTURES)])
         # Sanitized fixture has orphan pages, so expect warnings or a successful exit

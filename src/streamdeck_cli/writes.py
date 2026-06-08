@@ -115,6 +115,24 @@ def clone_page(profile_dir: Path, source_uuid: str, *, new_name: str | None = No
     return new_uuid
 
 
+# ── Page rename ────────────────────────────────────────────────────────────
+
+
+def rename_page(profile_dir: Path, target_uuid: str, *, new_name: str) -> None:
+    """Rename a page by UUID. Atomic write, refuses to touch missing pages.
+
+    Renaming a page does NOT change its position in the rotation or which page
+    is current — it only updates the ``Name`` field in the page's
+    ``manifest.json``.
+    """
+    page_dir = profile_dir / "Profiles" / target_uuid
+    if not page_dir.is_dir():
+        raise FileNotFoundError(f"page not found on disk: {target_uuid}")
+    manifest = _read_json(page_dir / "manifest.json")
+    manifest["Name"] = new_name
+    _atomic_write_json(page_dir / "manifest.json", manifest)
+
+
 # ── Page deletion ───────────────────────────────────────────────────────────
 
 

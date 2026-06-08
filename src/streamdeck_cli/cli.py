@@ -27,6 +27,7 @@ from streamdeck_cli.writes import (
     clone_page,
     create_page,
     delete_page,
+    rename_page,
     restore_profile,
     set_current_page,
 )
@@ -210,6 +211,20 @@ def cmd_delete_page(uuid: str, install_root: Path | None, profile_dir: Path | No
     pd = _resolve_profile_dir(install_root, profile_dir)
     delete_page(pd, uuid)
     click.echo(f"deleted {uuid}")
+
+
+@main.command("rename-page")
+@click.argument("uuid")
+@click.argument("new_name")
+@click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("--profile-dir", type=click.Path(exists=True, path_type=Path), default=None)
+def cmd_rename_page(
+    uuid: str, new_name: str, install_root: Path | None, profile_dir: Path | None
+) -> None:
+    """Rename a page by UUID. Does not change its position in the rotation."""
+    pd = _resolve_profile_dir(install_root, profile_dir)
+    rename_page(pd, uuid, new_name=new_name)
+    click.echo(f"renamed {uuid} → {new_name!r}")
 
 
 @main.command("set-icon")

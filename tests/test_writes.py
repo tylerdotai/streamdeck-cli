@@ -12,6 +12,7 @@ from streamdeck_cli.writes import (
     clone_page,
     create_page,
     delete_page,
+    rename_page,
     restore_profile,
     set_current_page,
 )
@@ -121,6 +122,54 @@ class TestSetCurrentPage:
     def test_unknown_page_raises(self, isolated_profile: Path) -> None:
         with pytest.raises(ValueError, match="not active"):
             set_current_page(isolated_profile, "00000000-0000-0000-0000-000000000000")
+
+
+class TestRenamePage:
+    def test_updates_name_in_page_manifest(self, isolated_profile: Path) -> None:
+        target = "ABE23767-B7E5-62B5-C463-F3D5D64CB922"
+        before = json.loads(
+            (isolated_profile / "Profiles" / target / "manifest.json").read_text()
+        )
+        assert before["Name"] != "Home"
+        rename_page(isolated_profile, target, new_name="Home")
+        after = json.loads(
+            (isolated_profile / "Profiles" / target / "manifest.json").read_text()
+        )
+        assert after["Name"] == "Home"
+
+    def test_does_not_change_position_in_rotation(self, isolated_profile: Path) -> None:
+        target = "ABE23767-B7E5-62B5-C463-F3D5D64CB922"
+        before = json.loads((isolated_profile / "manifest.json").read_text())
+        rename_page(isolated_profile, target, new_name="Renamed")
+        after = json.loads((isolated_profile / "manifest.json").read_text())
+        assert after["Pages"]["Pages"] == before["Pages"]["Pages"]
+        assert after["Pages"]["Current"] == before["Pages"]["Current"]
+
+    def test_can_rename_to_empty_string(self, isolated_profile: Path) -> None:
+        target = "ABE23767-B7E5-62B5-C463-F3D5D64CB922"
+        rename_page(isolated_profile, target, new_name="")
+        manifest = json.loads(
+            (isolated_profile / "Profiles" / target / "manifest.json").read_text()
+        )
+        assert manifest["Name"] == ""
+
+    def test_unknown_page_raises(self, isolated_profile: Path) -> None:
+        with pytest.raises(FileNotFoundError, match="page not found on disk"):
+            rename_page(isolated_profile, "00000000-0000-0000-0000-000000000000", new_name="X")
+
+    def test_is_atomic(self, isolated_profile: Path) -> None:
+        """Verify rename rewrites in place and leaves no temp files behind."""
+        target = "ABE23767-B7E5-62B5-C463-F3D5D64CB922"
+        rename_page(isolated_profile, target, new_name="Atomic")
+        new = (isolated_profile / "Profiles" / target / "manifest.json").read_text()
+        assert "Atomic" in new
+        # No leftover .tmp files
+        leftovers = [
+            p
+            for p in (isolated_profile / "Profiles" / target).glob("manifest.json.*")
+            if p.name != "manifest.json"
+        ]
+        assert leftovers == []
 
 
 class TestBackupRestore:
