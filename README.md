@@ -42,9 +42,9 @@
     <a href="https://github.com/tylerdotai/streamdeck-cli"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/tylerdotai/streamdeck-cli/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/tylerdotai/streamdeck-cli/issues/new?labels=bug&template=bug-report.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/tylerdotai/streamdeck-cli/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/tylerdotai/streamdeck-cli/issues/new?labels=enhancement&template=feature-request.md">Request Feature</a>
   </p>
 </div>
 
@@ -103,8 +103,12 @@ Of course, `streamdeck-cli` doesn't try to replace the GUI — it's a complement
 
 ### Built With
 
-* [![Python][python-shield]][python-url] — 3.10 / 3.11 / 3.12 / 3.14
+* [![Python][python-shield]][python-url] — 3.10 / 3.11 / 3.12 (CI-tested)
 * [![Click][click-shield]][click-url] — CLI framework
+* [![Rich][rich-shield]][rich-url] — terminal output
+* [![PyYAML][yaml-shield]][yaml-url] — page spec parsing
+* [![MCP][mcp-shield]][mcp-url] — Model Context Protocol server
+* [![Hatchling][hatch-shield]][hatch-url] — build backend
 * [![pytest][pytest-shield]][pytest-url] — test runner
 * [![Ruff][ruff-shield]][ruff-url] — linter
 * [![mypy][mypy-shield]][mypy-url] — type checker
@@ -176,12 +180,26 @@ streamdeck list-pages
 
 # Read
 streamdeck show-page <uuid>
+streamdeck show-spec <uuid>            # render a page's manifest as YAML
 
 # Write
 streamdeck new-page --name "Coding"
+streamdeck new-page --from-yaml pages/coding.yaml --icons-dir assets/
 streamdeck clone-page <source-uuid> --name "Coding Copy"
 streamdeck delete-page <uuid>            # confirmation prompt
 streamdeck set-current <uuid>
+
+# Icons
+streamdeck set-icon <page-uuid> 0,0 /path/to/icon.png
+streamdeck remove-icon <page-uuid> 0,0
+
+# Sharing & version control
+streamdeck export -o profile.json
+streamdeck export -o profile.yaml
+streamdeck import profile.yaml --profile-dir <dir>
+streamdeck diff <profile-a-dir> <profile-b-dir>
+streamdeck merge <profile-a-dir> <profile-b-dir>            # adds pages, skips mods
+streamdeck merge <profile-a-dir> <profile-b-dir> --overwrite --allow-remove
 
 # Validate
 streamdeck validate
@@ -206,7 +224,29 @@ streamdeck backup -o bk.zip --install-root /Volumes/Backup/StreamDeck
 streamdeck show-page ff56cdd9-5ca7-4e39-927d-2390318b62f7 | jq '.Controllers[].Type'
 ```
 
+`show-spec` is the YAML equivalent — round-trip a page's intent through git:
+
+```sh
+streamdeck show-spec ff56cdd9-5ca7-4e39-927d-2390318b62f7 -o pages/coding.yaml
+```
+
 For more examples and the full schema, see the [Schema Reference](docs/schema.md).
+
+#### Use from an MCP client
+
+The same actions are also exposed as MCP tools (for Claude Code, Cursor, and any other MCP-compatible client) via the `streamdeck-mcp` server. Install the package and add the server to your client's MCP config:
+
+```json
+{
+  "mcpServers": {
+    "streamdeck": {
+      "command": "streamdeck-mcp"
+    }
+  }
+}
+```
+
+The server speaks stdio JSON-RPC and exposes 18 tools: `list_devices`, `list_profiles`, `list_pages`, `show_page`, `show_spec`, `new_page`, `clone_page`, `delete_page`, `set_current`, `set_icon`, `remove_icon`, `validate`, `backup`, `restore`, `export`, `import_profile`, `diff`, `merge`.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -276,11 +316,11 @@ Full schema — every key, every action type, every device model — lives in
 - [x] Write: `new-page`, `clone-page`, `delete-page`, `set-current`
 - [x] Validate + backup/restore
 - [x] CI on macOS × Python 3.10 / 3.11 / 3.12
-- [ ] `set-icon <page> <key> <png>` — programmatically assign icons
-- [ ] YAML page spec: `new-page --from-yaml pages/coding.yaml`
-- [ ] Profile-level `diff` and `merge` for sharing profiles
-- [ ] JSON / YAML profile export (lighter than the zip backup format)
-- [ ] MCP server wrapper so the same actions are available to MCP clients
+- [x] `set-icon <page> <key> <png>` and `remove-icon` — programmatically assign / clear icons
+- [x] YAML page spec: `new-page --from-yaml pages/coding.yaml` + `show-spec` round-trip
+- [x] Profile-level `diff` and `merge` for sharing profiles
+- [x] JSON / YAML profile export and import (lighter than the zip backup format)
+- [x] MCP server wrapper (`streamdeck-mcp`) so the same actions are available to MCP clients
 - [ ] PyPI publish: `pip install streamdeck-cli`
 - [ ] Windows-path testing on a live install
 
@@ -308,7 +348,7 @@ feature before opening a PR.
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Add a failing test (`pytest tests/ -k amazingfeature`)
 4. Make it pass
-5. Run the full suite: `pytest --cov=streamdeck_cli --cov-fail-under=85`
+5. Run the full suite: `pytest --cov=streamdeck_cli --cov-fail-under=80`
 6. Lint and type-check: `ruff check . && mypy src`
 7. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 8. Push to the Branch (`git push origin feature/AmazingFeature`)
@@ -375,6 +415,14 @@ Project Link: [https://github.com/tylerdotai/streamdeck-cli](https://github.com/
 [python-url]: https://www.python.org/
 [click-shield]: https://img.shields.io/badge/Click-CLI-000000?style=for-the-badge&logo=clickup&logoColor=white
 [click-url]: https://palletsprojects.com/p/click/
+[rich-shield]: https://img.shields.io/badge/Rich-13.0-FAE742?style=for-the-badge&logo=python&logoColor=black
+[rich-url]: https://rich.readthedocs.io/
+[yaml-shield]: https://img.shields.io/badge/PyYAML-6.0-FFB13B?style=for-the-badge&logo=yaml&logoColor=black
+[yaml-url]: https://pyyaml.org/
+[mcp-shield]: https://img.shields.io/badge/MCP-1.0-009485?style=for-the-badge&logo=protocols.io&logoColor=white
+[mcp-url]: https://modelcontextprotocol.io/
+[hatch-shield]: https://img.shields.io/badge/Hatchling-build-4051B5?style=for-the-badge
+[hatch-url]: https://hatch.pypa.io/latest/
 [pytest-shield]: https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white
 [pytest-url]: https://docs.pytest.org/
 [ruff-shield]: https://img.shields.io/badge/ruff-D7FF64?style=for-the-badge&logo=ruff&logoColor=black
