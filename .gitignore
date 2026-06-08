@@ -1,0 +1,22 @@
+# Build / test artifacts
+.venv/
+*.egg-info/
+build/
+dist/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.pyc
+__pycache__/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Real user data — never commit
+fixtures/real-profile/ProfilesV3/*/manifest.json.bak

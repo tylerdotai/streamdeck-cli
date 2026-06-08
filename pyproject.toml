@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "streamdeck-cli"
+version = "0.1.0"
+description = "Manage Elgato Stream Deck profiles, pages, and actions from the command line"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Tyler Delano", email = "tyler.delano@icloud.com" }]
+requires-python = ">=3.10"
+keywords = ["elgato", "stream-deck", "cli", "automation", "profiles"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: MacOS X",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "click>=8.1",
+    "pyyaml>=6.0",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "hatchling>=1.18",
+]
+
+[project.scripts]
+streamdeck = "streamdeck_cli.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/tylerdotai/streamdeck-cli"
+Issues = "https://github.com/tylerdotai/streamdeck-cli/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/streamdeck_cli"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src/streamdeck_cli"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "integration: requires a real Stream Deck installation (skipped by default)",
+]
+
+[tool.coverage.run]
+source = ["src/streamdeck_cli"]
+branch = true
