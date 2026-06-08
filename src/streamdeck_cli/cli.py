@@ -11,9 +11,10 @@ from pathlib import Path
 import click
 
 from streamdeck_cli import __version__
+from streamdeck_cli.icons import IconError, set_icon
 from streamdeck_cli.listing import list_devices, list_pages, list_profiles
 from streamdeck_cli.paths import resolve_profile_root
-from streamdeck_cli.validate import validate_profile
+from streamdeck_cli.validate import _page_dir_exists, validate_profile
 from streamdeck_cli.writes import (
     backup_profile,
     clone_page,
@@ -34,6 +35,14 @@ def _resolve_root(install_root: Path | None, profile_dir: Path | None) -> Path:
         # Caller is operating on a specific profile; return the install root.
         return resolve_profile_root(profile_dir.parent).root
     return resolve_profile_root().root
+
+
+def _resolve_page_dir(profile_dir: Path, page_uuid: str) -> Path:
+    """Return the on-disk page dir matching ``page_uuid`` (case-insensitive)."""
+    pages_dir = profile_dir / "Profiles"
+    if not _page_dir_exists(pages_dir, page_uuid):
+        raise click.ClickException(f"page {page_uuid} not found in {profile_dir}")
+    return next(p for p in pages_dir.iterdir() if p.is_dir() and p.name.lower() == page_uuid.lower())
 
 
 def _resolve_profile_dir(install_root: Path | None, profile_dir: Path | None) -> Path:
@@ -102,7 +111,7 @@ def cmd_show_page(uuid: str, install_root: Path | None, profile_dir: Path | None
     if not _page_dir_exists(pages_dir, uuid):
         raise click.ClickException(f"page {uuid} not found")
     # Find the actual (case-correct) dir name
-    actual = next(p for p in pages_dir.iterdir() if p.is_dir() and p.name.lower() == uuid.lower())
+    actual = _resolve_page_dir(pd, uuid)
     click.echo((actual / "manifest.json").read_text())
 
 
@@ -150,6 +159,63 @@ def cmd_delete_page(uuid: str, install_root: Path | None, profile_dir: Path | No
     pd = _resolve_profile_dir(install_root, profile_dir)
     delete_page(pd, uuid)
     click.echo(f"deleted {uuid}")
+
+
+@main.command("set-icon")
+@click.argument("page_uuid")
+@click.argument("key")
+@click.argument("png_path", type=click.Path(exists=True, path_type=Path))
+@click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("--profile-dir", type=click.Path(exists=True, path_type=Path), default=None)
+def cmd_set_icon(
+    page_uuid: str,
+    key: str,
+    png_path: Path,
+    install_root: Path | None,
+    profile_dir: Path | None,
+) -> None:
+    """Assign a PNG icon to a key on a page.
+
+    PAGE_UUID selects the page (from `list-pages`).
+
+    KEY selects the action: 'col,row' for keypad (e.g. '0,0') or 'row' for
+    encoder (e.g. '0').
+
+    PNG_PATH is the source icon. It's copied into the page's Images/ dir
+    under a content-hashed filename.
+    """
+    pd = _resolve_profile_dir(install_root, profile_dir)
+    page_dir = _resolve_page_dir(pd, page_uuid)
+    try:
+        rel = set_icon(page_dir, key, png_path)
+    except IconError as e:
+        raise click.ClickException(str(e)) from None
+    click.echo(f"set icon on {page_uuid} key {key} -> {rel}")
+
+
+@main.command("remove-icon")
+@click.argument("page_uuid")
+@click.argument("key")
+@click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
+@click.option("--profile-dir", type=click.Path(exists=True, path_type=Path), default=None)
+def cmd_remove_icon(
+    page_uuid: str,
+    key: str,
+    install_root: Path | None,
+    profile_dir: Path | None,
+) -> None:
+    """Remove the icon reference from a key (PNG file is kept on disk)."""
+    from streamdeck_cli.icons import remove_icon
+
+    pd = _resolve_profile_dir(install_root, profile_dir)
+    page_dir = _resolve_page_dir(pd, page_uuid)
+    try:
+        removed = remove_icon(page_dir, key)
+    except IconError as e:
+        raise click.ClickException(str(e)) from None
+    if not removed:
+        raise click.ClickException(f"no icon to remove at key {key}")
+    click.echo(f"removed icon from {page_uuid} key {key}")
 
 
 @main.command("set-current")
