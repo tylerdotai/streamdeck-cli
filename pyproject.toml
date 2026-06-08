@@ -40,6 +40,7 @@ dev = [
 
 [project.scripts]
 streamdeck = "streamdeck_cli.cli:main"
+streamdeck-mcp = "streamdeck_cli.mcp_server:main"
 
 [project.urls]
 Homepage = "https://github.com/tylerdotai/streamdeck-cli"
@@ -68,6 +69,7 @@ addopts = "-ra --strict-markers"
 markers = [
     "integration: requires a real Stream Deck installation (skipped by default)",
 ]
+asyncio_mode = "auto"
 
 [tool.coverage.run]
 source = ["src/streamdeck_cli"]
