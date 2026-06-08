@@ -1,0 +1,28 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: enhancement
+assignees: ''
+---
+
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always
+frustrated when [...]
+
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
+
+**Describe alternatives you've considered**
+Any alternative solutions or features you've considered.
+
+**Use case**
+Who would use this, and what would they do with it? Sketch the CLI
+command(s) you'd want:
+
+```sh
+streamdeck your-idea --flag value
+```
+
+**Additional context**
+Add any other context, screenshots, or examples about the feature request here.

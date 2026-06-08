@@ -1,40 +1,174 @@
-# streamdeck-cli
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a id="readme-top"></a>
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
 
-> A command-line tool for managing **Elgato Stream Deck** profiles, pages, and actions from your terminal.
 
-The official Elgato CLI/SDK only supports *building plugins*. There is no first-party tool for managing the profiles, pages, and actions you've already laid out in the Stream Deck app. `streamdeck-cli` **reverse-engineers the on-disk JSON schema** used by the Stream Deck 7.x desktop app and exposes it as a safe, testable Python CLI.
 
-> **Status:** alpha. Tested against Stream Deck 7.3.1 (build 22604) on macOS. Windows path supported but untested on a real install.
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![CI][ci-shield]][ci-url]
 
-## Why
 
-If you've ever:
 
-- Wanted to **script page rotations** for streaming / focus modes
-- Wished you could **clone a page** to hand to a friend
-- Needed to **back up a profile** before a risky edit
-- Wished the Elgato app had a CLI for **batch page creation**
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/tylerdotai/streamdeck-cli">
+    <img src="images/logo_001.jpg" alt="Logo" width="120" height="120">
+  </a>
 
-…this is the tool. It's small, dependency-free at runtime, and round-trips your existing profiles without a single character of byte-level change.
+<h3 align="center">streamdeck-cli</h3>
 
-## Install
+  <p align="center">
+    A command-line tool for managing Elgato Stream Deck profiles, pages, and actions from your terminal.
+    <br />
+    <a href="https://github.com/tylerdotai/streamdeck-cli"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/tylerdotai/streamdeck-cli/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
+    <a href="https://github.com/tylerdotai/streamdeck-cli/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
 
-```bash
-pip install streamdeck-cli
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#reverse-engineering-note">Reverse-Engineering Note</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#safety">Safety</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+The official Elgato Stream Deck app is great for laying out buttons — but the moment you want to **script a page rotation**, **clone a profile for a friend**, **back up before a risky edit**, or **batch-create a page from a template**, you're stuck clicking through the GUI. There is no first-party CLI for managing Stream Deck profiles.
+
+**`streamdeck-cli`** reverse-engineers the on-disk JSON format that the Stream Deck desktop app (tested on **7.3.1**, build 22604) uses, and exposes it as a safe, testable Python CLI. It reads and writes the same files the app does, with atomic-write semantics, case-insensitive UUID handling, and a `validate` command to catch corruption.
+
+Here's why this exists:
+
+* The official **Stream Deck SDK** only supports *building plugins* — there's no first-party tool for managing profiles, pages, or actions you've already laid out.
+* Page rotation between streaming modes, focus modes, and "normal work" should be **scriptable**, not clickable.
+* A page you spent an hour laying out should be **one zip file** you can email to a friend or stash in git.
+* Stream Deck's built-in backup is **opaque**; you can't diff it, version it, or inspect it.
+
+Of course, `streamdeck-cli` doesn't try to replace the GUI — it's a complement for the operations that benefit from being reproducible and scriptable.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+### Built With
+
+* [![Python][python-shield]][python-url] — 3.10 / 3.11 / 3.12 / 3.14
+* [![Click][click-shield]][click-url] — CLI framework
+* [![pytest][pytest-shield]][pytest-url] — test runner
+* [![Ruff][ruff-shield]][ruff-url] — linter
+* [![mypy][mypy-shield]][mypy-url] — type checker
+* [![GitHub Actions][gha-shield]][gha-url] — CI
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+### Reverse-Engineering Note
+
+`streamdeck-cli` is **not affiliated with Elgato or Corsair**. The on-disk JSON schema is undocumented, and was reverse-engineered by capturing the data files of a real Stream Deck 7.3.1 install on macOS and observing how the app reacts to edits. It is a best-effort description of an undocumented format — please open an issue if you find something we've missed.
+
+See [`docs/schema.md`](docs/schema.md) for the full schema reference, including a worked example of a Hotkey action, the model numbers for every device variant, and the known quirks (case-insensitive UUIDs on macOS, "default" pages can be orphaned, etc.).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+`streamdeck-cli` runs on **macOS** (tested on 26.5) and **Windows** (path resolution supported; not tested on a live install). Linux is not supported because the Elgato app doesn't ship for it.
+
+### Prerequisites
+
+* Python **3.10 or newer** (3.14 is fine)
+* An installed copy of the **Elgato Stream Deck** desktop app
+* A connected Stream Deck device (the CLI can also operate on a backup copy without a device plugged in)
+
+```sh
+python3 --version
+ls ~/Library/Application\ Support/com.elgato.StreamDeck/
 ```
 
-Or from source (recommended for development):
+### Installation
 
-```bash
+#### From source (recommended for development)
+
+```sh
 git clone https://github.com/tylerdotai/streamdeck-cli
 cd streamdeck-cli
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
+.venv/bin/streamdeck --version
 ```
 
+#### From a built wheel (when published to PyPI)
+
+```sh
+pip install streamdeck-cli
+streamdeck --version
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- USAGE EXAMPLES -->
 ## Usage
 
-```bash
+By default, `streamdeck-cli` reads and writes the standard install root for your platform (`~/Library/Application Support/com.elgato.StreamDeck/` on macOS, `%APPDATA%\Elgato\StreamDeck\` on Windows). Override with `--install-root` for a custom location or a backup you're poking at.
+
+```sh
 # Discovery
 streamdeck list-devices
 streamdeck list-profiles
@@ -57,75 +191,195 @@ streamdeck backup -o ~/Desktop/profile.zip
 streamdeck restore ~/Desktop/profile.zip
 ```
 
-By default, `streamdeck-cli` reads/writes the standard install root for your
-platform. Override with `--install-root` for a custom location or a backup
-you're poking at.
+#### Operate on a custom install root
 
-```bash
+```sh
 streamdeck list-pages --install-root /Volumes/Backup/StreamDeck
+streamdeck backup -o bk.zip --install-root /Volumes/Backup/StreamDeck
 ```
 
-## How it works
+#### Output format
 
-See [`docs/schema.md`](docs/schema.md) for the full reverse-engineered schema
-reference (tested against Stream Deck 7.3.1).
+`show-page` prints the full JSON manifest of a page to stdout — useful for piping into `jq`:
 
-**TL;DR:**
+```sh
+streamdeck show-page ff56cdd9-5ca7-4e39-927d-2390318b62f7 | jq '.Controllers[].Type'
+```
 
-- The Stream Deck app stores everything as JSON in
-  `~/Library/Application Support/com.elgato.StreamDeck/ProfilesV3/...`.
-- A **profile** is `<profile-uuid>.sdProfile/manifest.json` plus a `Profiles/`
-  directory of **page** UUIDs.
-- A **page** is `<page-uuid>/manifest.json` with two `Controllers` (Keypad
-  and Encoder) keyed by `"col,row"`.
-- `streamdeck-cli` reads/writes these manifests directly, with
-  atomic-write semantics and a zip-based backup format.
+For more examples and the full schema, see the [Schema Reference](docs/schema.md).
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- HOW IT WORKS -->
+## How It Works
+
+**TL;DR:** the Stream Deck desktop app stores everything as JSON in
+`~/Library/Application Support/com.elgato.StreamDeck/ProfilesV3/...`. A **profile** is
+`<profile-uuid>.sdProfile/manifest.json` plus a `Profiles/` directory of **page** UUIDs.
+A **page** is `<page-uuid>/manifest.json` with two `Controllers` (Keypad and Encoder) keyed
+by `"col,row"`. `streamdeck-cli` reads and writes these manifests directly, with atomic
+write semantics and a zip-based backup format.
+
+```
+<root>/
+├── ProfilesV3/
+│   └── <profile-uuid>.sdProfile/
+│       ├── manifest.json
+│       └── Profiles/
+│           ├── <page-uuid-1>/
+│           │   ├── manifest.json
+│           │   └── Images/
+│           ├── <page-uuid-2>/
+│           │   └── ...
+│           └── <page-uuid-N>/
+│               └── ...
+├── BackupV3/   # auto-generated .streamDeckProfilesBackup files (zip)
+├── Plugins/    # installed plugins (sdPlugin bundles)
+└── Marketplace/# plugin store cache
+```
+
+Full schema — every key, every action type, every device model — lives in
+[`docs/schema.md`](docs/schema.md).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- SAFETY -->
 ## Safety
 
-- `streamdeck-cli` **never deletes the current or default page** — switch
-  current first.
-- All write operations are atomic (write to temp file, then rename) so a
-  crash mid-edit can't corrupt your profile.
-- The Stream Deck app itself takes a backup snapshot to `BackupV3/` on every
-  change, so destructive CLI operations are recoverable from the app's
-  "Restore from backup" feature even if you skip the `backup` command.
-- Use `streamdeck validate` to check a profile before and after a series of
-  edits.
+`streamdeck-cli` is intentionally conservative:
 
-## Development
+* **Refuses to delete the current or default page.** Switch the current page first
+  (`streamdeck set-current <other-uuid>`), then delete.
+* **Atomic writes.** Every manifest write is a temp-file + rename, so a crash
+  mid-edit can't corrupt your profile.
+* **Backup-aware.** Stream Deck's own app writes a snapshot to `BackupV3/` on
+  every change. Even if you skip `streamdeck backup`, the in-app "Restore from
+  backup" feature still works.
+* **Validate before destructive operations.** `streamdeck validate` reports
+  missing manifests, orphan page directories, and broken current/default
+  references — run it before and after a series of edits.
+* **No network access.** The CLI never phones home.
 
-```bash
-# Run tests
-.venv/bin/pytest
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-# Lint
-.venv/bin/ruff check .
 
-# Type check
-.venv/bin/mypy src
 
-# All checks at once
-.venv/bin/pytest --cov=streamdeck_cli --cov-report=term-missing
-```
+<!-- ROADMAP -->
+## Roadmap
 
-The project follows **strict TDD** — see `tests/` and the TDD commit history.
+- [x] Discovery: `list-devices`, `list-profiles`, `list-pages`
+- [x] Read: `show-page`
+- [x] Write: `new-page`, `clone-page`, `delete-page`, `set-current`
+- [x] Validate + backup/restore
+- [x] CI on macOS × Python 3.10 / 3.11 / 3.12
+- [ ] `set-icon <page> <key> <png>` — programmatically assign icons
+- [ ] YAML page spec: `new-page --from-yaml pages/coding.yaml`
+- [ ] Profile-level `diff` and `merge` for sharing profiles
+- [ ] JSON / YAML profile export (lighter than the zip backup format)
+- [ ] MCP server wrapper so the same actions are available to MCP clients
+- [ ] PyPI publish: `pip install streamdeck-cli`
+- [ ] Windows-path testing on a live install
 
+See the [open issues](https://github.com/tylerdotai/streamdeck-cli/issues) for a full
+list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
 ## Contributing
 
-1. Fork the repo
-2. Add a failing test for your feature (`pytest tests/`)
-3. Make it pass
-4. Open a PR
+Contributions are what make the open source community such an amazing place to
+learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-Please don't open a PR with code that doesn't have tests.
+If you have a suggestion that would make this better, please fork the repo and
+create a pull request. You can also simply open an issue with the tag
+"enhancement". Don't forget to give the project a star! Thanks again!
 
+This project follows **strict TDD** — please add a failing test for your
+feature before opening a PR.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Add a failing test (`pytest tests/ -k amazingfeature`)
+4. Make it pass
+5. Run the full suite: `pytest --cov=streamdeck_cli --cov-fail-under=85`
+6. Lint and type-check: `ruff check . && mypy src`
+7. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+8. Push to the Branch (`git push origin feature/AmazingFeature`)
+9. Open a Pull Request
+
+### Top contributors:
+
+<a href="https://github.com/tylerdotai/streamdeck-cli/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=tylerdotai/streamdeck-cli" alt="contrib.rocks image" />
+</a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
 
-## Not affiliated
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-`streamdeck-cli` is an independent project. Elgato, Stream Deck, and the Stream
-Deck SDK are trademarks of Corsair Gaming, Inc. This project is not endorsed
-by or affiliated with Elgato or Corsair.
+
+
+<!-- CONTACT -->
+## Contact
+
+Tyler Delano — [@tylerdotai](https://x.com/tylerdotai) — tyler.delano@icloud.com
+
+Project Link: [https://github.com/tylerdotai/streamdeck-cli](https://github.com/tylerdotai/streamdeck-cli)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [othneildrew/Best-README-Template](https://github.com/othneildrew/Best-README-Template) — the README template this README is based on
+* [Elgato](https://www.elgato.com/) / [Corsair](https://www.corsair.com/) — for the Stream Deck hardware and desktop app (Stream Deck is a trademark of Corsair Gaming, Inc.; this project is not affiliated)
+* [shields.io](https://shields.io) — for the badge icons
+* [contrib.rocks](https://contrib.rocks) — for the contributors widget
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/tylerdotai/streamdeck-cli.svg?style=for-the-badge
+[contributors-url]: https://github.com/tylerdotai/streamdeck-cli/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/tylerdotai/streamdeck-cli.svg?style=for-the-badge
+[forks-url]: https://github.com/tylerdotai/streamdeck-cli/network/members
+[stars-shield]: https://img.shields.io/github/stars/tylerdotai/streamdeck-cli.svg?style=for-the-badge
+[stars-url]: https://github.com/tylerdotai/streamdeck-cli/stargazers
+[issues-shield]: https://img.shields.io/github/issues/tylerdotai/streamdeck-cli.svg?style=for-the-badge
+[issues-url]: https://github.com/tylerdotai/streamdeck-cli/issues
+[license-shield]: https://img.shields.io/github/license/tylerdotai/streamdeck-cli.svg?style=for-the-badge
+[license-url]: https://github.com/tylerdotai/streamdeck-cli/blob/main/LICENSE
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/tylerdotai/streamdeck-cli/ci.yml?style=for-the-badge&label=CI
+[ci-url]: https://github.com/tylerdotai/streamdeck-cli/actions/workflows/ci.yml
+
+[python-shield]: https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white
+[python-url]: https://www.python.org/
+[click-shield]: https://img.shields.io/badge/Click-CLI-000000?style=for-the-badge&logo=clickup&logoColor=white
+[click-url]: https://palletsprojects.com/p/click/
+[pytest-shield]: https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white
+[pytest-url]: https://docs.pytest.org/
+[ruff-shield]: https://img.shields.io/badge/ruff-D7FF64?style=for-the-badge&logo=ruff&logoColor=black
+[ruff-url]: https://docs.astral.sh/ruff/
+[mypy-shield]: https://img.shields.io/badge/mypy-checked-blue?style=for-the-badge
+[mypy-url]: https://mypy.readthedocs.io/
+[gha-shield]: https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white
+[gha-url]: https://github.com/features/actions
