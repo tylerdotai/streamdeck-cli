@@ -129,6 +129,8 @@ def cmd_show_page(uuid: str, install_root: Path | None, profile_dir: Path | None
 @click.option("--icon", default="", help="Icon path (relative to page Images/)")
 @click.option("--from-yaml", "from_yaml", default=None, type=click.Path(exists=True, path_type=Path),
               help="Create the page from a YAML spec file")
+@click.option("--to-page", "target_uuid", default=None,
+              help="Update an existing page by UUID instead of creating a new one (requires --from-yaml)")
 @click.option("--icons-dir", "icons_dirs", multiple=True, type=click.Path(exists=True, path_type=Path),
               help="Directory to search for icons referenced in the YAML spec (repeatable)")
 @click.option("--install-root", type=click.Path(exists=True, path_type=Path), default=None)
@@ -137,11 +139,18 @@ def cmd_new_page(
     name: str | None,
     icon: str,
     from_yaml: Path | None,
+    target_uuid: str | None,
     icons_dirs: tuple[Path, ...],
     install_root: Path | None,
     profile_dir: Path | None,
 ) -> None:
-    """Create a new empty page, or populate one from a YAML spec."""
+    """Create a new empty page, or populate one from a YAML spec.
+
+    With --to-page, update an existing page by UUID from a YAML spec instead
+    of creating a new one. The page's UUID is preserved.
+    """
+    if target_uuid is not None and from_yaml is None:
+        raise click.ClickException("--to-page requires --from-yaml")
     if from_yaml is None and not name:
         raise click.ClickException("--name is required unless --from-yaml is set")
     pd = _resolve_profile_dir(install_root, profile_dir)
@@ -152,8 +161,12 @@ def cmd_new_page(
         except YamlSpecError as e:
             raise click.ClickException(str(e)) from None
         try:
-            new_uuid = apply_yaml_spec(pd, spec, icon_search_dirs=list(icons_dirs))
-        except YamlSpecError as e:
+            new_uuid = apply_yaml_spec(
+                pd, spec,
+                icon_search_dirs=list(icons_dirs),
+                target_uuid=target_uuid,
+            )
+        except (YamlSpecError, FileNotFoundError) as e:
             raise click.ClickException(str(e)) from None
         click.echo(new_uuid)
     else:

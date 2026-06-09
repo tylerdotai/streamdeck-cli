@@ -122,6 +122,10 @@ _PLUGIN_REGISTRY: dict[str, dict[str, Any]] = {
         "plugin_name": "com.elgato.streamdeck.profile.openchild",
         "default_settings": {"ProfileUUID": ""},
     },
+    "com.elgato.streamdeck.profile.rotate": {
+        "plugin_name": "Switch Profile",
+        "default_settings": {},  # rotate left/right through the install root's Pages list
+    },
 }
 
 
@@ -162,26 +166,24 @@ def _ensure_action_dict(spec: dict[str, Any]) -> dict[str, Any]:
     return action
 
 
-def apply_yaml_spec(
-    profile_dir: Path,
+def _apply_spec_to_page(
+    page_dir: Path,
     spec: YamlPageSpec,
     *,
-    icon_search_dirs: list[Path] | None = None,
-) -> str:
-    """Create a new page in ``profile_dir`` from ``spec``. Returns the new page UUID.
+    search_dirs: list[Path],
+) -> None:
+    """Write the actions described in ``spec`` into an existing page directory.
 
-    ``icon_search_dirs`` is a list of directories to look up icon files
-    referenced in the spec. The first match wins.
+    The page directory must already exist with a valid ``manifest.json``.
+    Controller blocks in the spec are matched against existing controllers
+    in the manifest; new controllers are appended if missing.
     """
-    search_dirs = icon_search_dirs or []
-
-    # First, create an empty page so we get a UUID + dir + manifest skeleton
-    new_uuid = create_page(profile_dir, name=spec.name)
-    page_dir = profile_dir / "Profiles" / new_uuid
     manifest_path = page_dir / "manifest.json"
     page_data = json.loads(manifest_path.read_text())
 
-    # Now build controllers
+    # Update page Name from the spec
+    page_data["Name"] = spec.name
+
     for ctype, cdata in spec.controllers.items():
         if ctype not in _CONTROLLER_TYPE_MAP:
             raise YamlSpecError(
@@ -191,27 +193,20 @@ def apply_yaml_spec(
         sd_type = _CONTROLLER_TYPE_MAP[ctype]
         controller = next((c for c in page_data["Controllers"] if c["Type"] == sd_type), None)
         if controller is None:
-            # Some fixture pages may not have both controllers; add it
             controller = {"Type": sd_type, "Actions": {}}
             page_data["Controllers"].append(controller)
         if controller.get("Actions") is None:
             controller["Actions"] = {}
 
         for key, action_spec in cdata["actions"].items():
-            # Key format differs: keypad uses "col,row", encoder uses "0,row"
             sd_key = key if ctype == "keypad" else f"0,{key}" if "," not in key else key
             action = _ensure_action_dict(action_spec)
 
-            # Resolve + assign icon
             icon_name = action_spec.get("icon")
             if icon_name:
                 icon_path = _resolve_icon(icon_name, search_dirs)
                 if icon_path is not None:
-                    # set_icon writes the manifest with a default action + Icon field.
-                    # We then read it back, copy the Icon/Encoder.Icon into our
-                    # populated action, and persist.
                     set_icon(page_dir, sd_key, icon_path)
-                    # Reload to get the post-set_icon manifest
                     page_data = json.loads(manifest_path.read_text())
                     ctrl = next(c for c in page_data["Controllers"] if c["Type"] == sd_type)
                     existing = (ctrl.get("Actions") or {}).get(sd_key, {})
@@ -221,14 +216,42 @@ def apply_yaml_spec(
                         action["Icon"] = existing_icon
                     elif existing_enc_icon and ctype == "encoder":
                         action["Encoder"] = {"Icon": existing_enc_icon}
-                # If not found, silently skip (no Icon field set)
 
             if controller.get("Actions") is None:
                 controller["Actions"] = {}
             controller["Actions"][sd_key] = action
 
-    # Persist
     manifest_path.write_text(json.dumps(page_data, indent=4))
+
+
+def apply_yaml_spec(
+    profile_dir: Path,
+    spec: YamlPageSpec,
+    *,
+    icon_search_dirs: list[Path] | None = None,
+    target_uuid: str | None = None,
+) -> str:
+    """Apply a YAML page spec to ``profile_dir``.
+
+    If ``target_uuid`` is given, the spec is written into the existing page at
+    that UUID and the same UUID is returned. Otherwise a new page is created
+    and its UUID is returned.
+
+    ``icon_search_dirs`` is a list of directories to look up icon files
+    referenced in the spec. The first match wins.
+    """
+    search_dirs = icon_search_dirs or []
+
+    if target_uuid is not None:
+        page_dir = profile_dir / "Profiles" / target_uuid
+        if not page_dir.is_dir():
+            raise FileNotFoundError(f"target page does not exist: {target_uuid}")
+        _apply_spec_to_page(page_dir, spec, search_dirs=search_dirs)
+        return target_uuid
+
+    new_uuid = create_page(profile_dir, name=spec.name)
+    page_dir = profile_dir / "Profiles" / new_uuid
+    _apply_spec_to_page(page_dir, spec, search_dirs=search_dirs)
     return new_uuid
 
 

@@ -286,6 +286,84 @@ controllers:
         assert action["UUID"] == "com.elgato.streamdeck.system.hotkey"
         assert action["Plugin"]["Name"] == "Activate a Key Command"
 
+    def test_profile_rotate_plugin_no_settings(self, isolated_profile: Path) -> None:
+        spec = YamlPageSpec.from_yaml(
+            """
+name: Page Rotator
+controllers:
+  encoder:
+    actions:
+      "3,0":
+        title: Pages
+        plugin: com.elgato.streamdeck.profile.rotate
+"""
+        )
+        new_uuid = apply_yaml_spec(isolated_profile, spec, icon_search_dirs=[])
+        manifest = json.loads(
+            (isolated_profile / "Profiles" / new_uuid / "manifest.json").read_text()
+        )
+        enc = next(c for c in manifest["Controllers"] if c["Type"] == "Encoder")
+        action = enc["Actions"]["3,0"]
+        assert action["UUID"] == "com.elgato.streamdeck.profile.rotate"
+        assert action["Plugin"]["Name"] == "Switch Profile"
+        # No settings is fine for the rotate plugin — it reads the install-root Pages list
+        assert action["Settings"] == {}
+
+    def test_target_uuid_updates_existing_page(self, isolated_profile: Path) -> None:
+        """apply_yaml_spec with target_uuid should overwrite an existing page, preserving its UUID."""
+        # Create an initial page
+        first_spec = YamlPageSpec.from_yaml(
+            """
+name: Original
+controllers:
+  keypad:
+    actions:
+      "0,0":
+        title: A
+"""
+        )
+        uuid1 = apply_yaml_spec(isolated_profile, first_spec, icon_search_dirs=[])
+
+        # Now apply a different spec to that exact page
+        second_spec = YamlPageSpec.from_yaml(
+            """
+name: Updated
+controllers:
+  keypad:
+    actions:
+      "0,0":
+        title: B
+        plugin: com.elgato.streamdeck.system.website
+        settings:
+          path: "https://example.com"
+  encoder:
+    actions:
+      "3,0":
+        title: Pages
+        plugin: com.elgato.streamdeck.profile.rotate
+"""
+        )
+        uuid2 = apply_yaml_spec(
+            isolated_profile, second_spec, icon_search_dirs=[], target_uuid=uuid1
+        )
+        assert uuid2 == uuid1  # UUID preserved
+
+        manifest = json.loads(
+            (isolated_profile / "Profiles" / uuid1 / "manifest.json").read_text()
+        )
+        assert manifest["Name"] == "Updated"
+        kp = next(c for c in manifest["Controllers"] if c["Type"] == "Keypad")
+        assert kp["Actions"]["0,0"]["Name"] == "B"
+        enc = next(c for c in manifest["Controllers"] if c["Type"] == "Encoder")
+        assert enc["Actions"]["3,0"]["UUID"] == "com.elgato.streamdeck.profile.rotate"
+
+    def test_target_uuid_missing_page_raises(self, isolated_profile: Path) -> None:
+        spec = YamlPageSpec.from_yaml("name: X\ncontrollers: {}\n")
+        with pytest.raises(FileNotFoundError, match="does not exist"):
+            apply_yaml_spec(
+                isolated_profile, spec, icon_search_dirs=[], target_uuid="00000000-0000-0000-0000-000000000000"
+            )
+
 
 # ── Render (page → YAML) ────────────────────────────────────────────────────
 
