@@ -118,6 +118,10 @@ _PLUGIN_REGISTRY: dict[str, dict[str, Any]] = {
         "plugin_name": "Website",
         "default_settings": {"openInBrowser": True, "path": ""},
     },
+    "com.elgato.streamdeck.profile.openchild": {
+        "plugin_name": "com.elgato.streamdeck.profile.openchild",
+        "default_settings": {"ProfileUUID": ""},
+    },
 }
 
 
