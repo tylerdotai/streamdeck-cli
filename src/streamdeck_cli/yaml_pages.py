@@ -101,20 +101,59 @@ def _resolve_icon(icon_name: str, search_dirs: list[Path]) -> Path | None:
     return None
 
 
+# ── Plugin registry ────────────────────────────────────────────────────────
+# Maps the YAML `plugin:` value to the right action template.
+# Each entry knows the plugin's display name and the Settings schema it expects.
+
+_PLUGIN_REGISTRY: dict[str, dict[str, Any]] = {
+    "com.elgato.streamdeck.system.hotkey": {
+        "plugin_name": "Activate a Key Command",
+        "default_settings": {},  # caller must provide Hotkeys list
+    },
+    "com.elgato.streamdeck.system.open": {
+        "plugin_name": "Open",
+        "default_settings": {"path": ""},
+    },
+    "com.elgato.streamdeck.system.website": {
+        "plugin_name": "Website",
+        "default_settings": {"openInBrowser": True, "path": ""},
+    },
+}
+
+
 def _ensure_action_dict(spec: dict[str, Any]) -> dict[str, Any]:
-    """Build a manifest action dict from a YAML action spec."""
+    """Build a manifest action dict from a YAML action spec.
+
+    Recognized spec keys (all optional except ``plugin`` and ``title``):
+      - ``title``: display title
+      - ``icon``:  filename resolved against ``--icons-dir`` (optional)
+      - ``plugin``: plugin UUID; default is the system hotkey
+      - ``settings``: free-form dict merged into the plugin's Settings
+    """
+    plugin_uuid = spec.get("plugin", "com.elgato.streamdeck.system.hotkey")
+    plugin_info = _PLUGIN_REGISTRY.get(
+        plugin_uuid,
+        {
+            "plugin_name": spec.get("plugin_name", plugin_uuid),
+            "default_settings": {},
+        },
+    )
+
+    settings: dict[str, Any] = {**plugin_info["default_settings"], **spec.get("settings", {})}
+
     action: dict[str, Any] = {
         "ActionID": "00000000-0000-0000-0000-000000000000",
         "Name": spec.get("title", ""),
-        "UUID": spec.get("plugin", "com.elgato.streamdeck.system.hotkey"),
+        "UUID": plugin_uuid,
         "Plugin": {
-            "Name": spec.get("plugin_name", "Activate a Key Command"),
-            "UUID": spec.get("plugin", "com.elgato.streamdeck.system.hotkey"),
+            "Name": plugin_info["plugin_name"],
+            "UUID": plugin_uuid,
             "Version": "1.0",
         },
         "LinkedTitle": True,
         "State": 0,
         "States": [{"Title": spec.get("title", "")}],
+        "Settings": settings,
     }
     return action
 

@@ -218,6 +218,74 @@ controllers:
         with pytest.raises(YamlSpecError, match="controller"):
             apply_yaml_spec(isolated_profile, spec, icon_search_dirs=[])
 
+    def test_open_plugin_with_path(self, isolated_profile: Path) -> None:
+        spec = YamlPageSpec.from_yaml(
+            """
+name: App Launcher
+controllers:
+  keypad:
+    actions:
+      "0,0":
+        title: VS Code
+        plugin: com.elgato.streamdeck.system.open
+        settings:
+          path: "/Applications/Visual Studio Code.app"
+"""
+        )
+        new_uuid = apply_yaml_spec(isolated_profile, spec, icon_search_dirs=[])
+        manifest = json.loads(
+            (isolated_profile / "Profiles" / new_uuid / "manifest.json").read_text()
+        )
+        keypad = next(c for c in manifest["Controllers"] if c["Type"] == "Keypad")
+        action = keypad["Actions"]["0,0"]
+        assert action["UUID"] == "com.elgato.streamdeck.system.open"
+        assert action["Plugin"]["Name"] == "Open"
+        assert action["Settings"]["path"] == "/Applications/Visual Studio Code.app"
+
+    def test_website_plugin_with_url(self, isolated_profile: Path) -> None:
+        spec = YamlPageSpec.from_yaml(
+            """
+name: Links
+controllers:
+  keypad:
+    actions:
+      "0,0":
+        title: Twitch
+        plugin: com.elgato.streamdeck.system.website
+        settings:
+          path: "https://twitch.tv"
+"""
+        )
+        new_uuid = apply_yaml_spec(isolated_profile, spec, icon_search_dirs=[])
+        manifest = json.loads(
+            (isolated_profile / "Profiles" / new_uuid / "manifest.json").read_text()
+        )
+        keypad = next(c for c in manifest["Controllers"] if c["Type"] == "Keypad")
+        action = keypad["Actions"]["0,0"]
+        assert action["UUID"] == "com.elgato.streamdeck.system.website"
+        assert action["Settings"]["path"] == "https://twitch.tv"
+        assert action["Settings"]["openInBrowser"] is True
+
+    def test_default_plugin_is_hotkey(self, isolated_profile: Path) -> None:
+        spec = YamlPageSpec.from_yaml(
+            """
+name: Hotkey Page
+controllers:
+  keypad:
+    actions:
+      "0,0":
+        title: Undo
+"""
+        )
+        new_uuid = apply_yaml_spec(isolated_profile, spec, icon_search_dirs=[])
+        manifest = json.loads(
+            (isolated_profile / "Profiles" / new_uuid / "manifest.json").read_text()
+        )
+        keypad = next(c for c in manifest["Controllers"] if c["Type"] == "Keypad")
+        action = keypad["Actions"]["0,0"]
+        assert action["UUID"] == "com.elgato.streamdeck.system.hotkey"
+        assert action["Plugin"]["Name"] == "Activate a Key Command"
+
 
 # ── Render (page → YAML) ────────────────────────────────────────────────────
 
